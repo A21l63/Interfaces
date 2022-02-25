@@ -1,0 +1,39 @@
+# depslib dependency file v1.0
+1645750395 source:d:\programming\interfaces\text.c
+	"main.h"
+
+1645750741 source:d:\programming\interfaces\resource.rc
+	"menu.h"
+
+1645368875 d:\programming\interfaces\menu.h
+
+1645654237 source:d:\programming\interfaces\main.cpp
+	"main.h"
+	"scroll.c"
+	"text.c"
+	"paint.c"
+
+1645750741 d:\programming\interfaces\main.h
+	<stdio.h>
+	<stdlib.h>
+	<tchar.h>
+	<windows.h>
+	<math.h>
+	<limits.h>
+	"menu.h"
+
+1645369130 source:d:\programming\interfaces\scroll.c
+	"main.h"
+
+1645369130 d:\programming\interfaces\scroll.c
+	"main.h"
+
+1645750395 d:\programming\interfaces\text.c
+	"main.h"
+
+1645750395 d:\programming\interfaces\paint.c
+	"main.h"
+
+1645750395 source:d:\programming\interfaces\paint.c
+	"main.h"
+
