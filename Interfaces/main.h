@@ -24,15 +24,15 @@
 
 typedef unsigned int uint;
 
-//структура модели текста
+//Структура модели текста
 typedef struct text_t {
-	char* str; //весь текст
-	uint* strStart; //массив смещений (начала строк)
-	uint maxStrLen; //длина самой длинной строки
-	uint strCount; //количество строк
+	char* str; //Сам текст
+	uint* strStart; //Индексы символов - начал строк
+	uint maxStrLen; //Наибольшая длина строки
+	uint strCount; //Количество строк
 }text_t;
 
-//метрика для размера окна
+//Размеры окна
 typedef struct metric_t {
   uint x;
   uint y;
@@ -40,31 +40,31 @@ typedef struct metric_t {
 
 //Инициализация структуры происходит с помощью TEXTMETRIC и GetTextMetrics()
 typedef struct symSize_t {
-    uint xChar; //средняя ширина
-    uint xCaps; //средняя ширина капса
-    uint yChar; //средняя высота
+    uint xChar; //Средняя ширина символа
+    uint xCaps; //Средняя ширина капса
+    uint yChar; //Средняя высота символа
 } symSize_t;
 
-//структура модели представления
+//Структура модели представления
 typedef struct view_t{
-    int selectedMode; //режим с версткой и без верстки
-    uint newStrCount; //количество строк для режима с вёрсткой
-    uint yOneList, xOneList; //размер одного листа для в символах (высота и ширина)
-    uint iMaxWidth;   //максимальное количество символов (режим без верстки)
-    metric_t clientScreen; //размеры рабочего окна (клиентской области)
-    symSize_t sym; //размеры символа
-    int width; //ширина окна в символах
+    int selectedMode; //Режим верстки
+    uint newStrCount; //Количество строк для режима с вёрсткой
+    uint yOneList, xOneList; //Размер рабочей области в символах (высота и ширина)
+    uint iMaxWidth;   //Наибольшая ширина строки (режим без верстки)
+    metric_t clientScreen; //Размеры рабочего окна (клиентской области)
+    symSize_t sym; //Размеры символа
+    int width; //Ширина окна в символах
 }view_t;
 
 typedef struct scroll_t{
-    SCROLLINFO scroll; //параметры скролла, устанавливаемые функцией SetScrollInfo
-    int xPos, yPos, prevPos; //сдвиг по х ползунка прокрутки, сдвиг по у, предыдущий двиг по у ползунка прокрутки
-    double sizeCoef;   //коэффициент изменения скролла
+    SCROLLINFO scroll; //Параметры скролла (устанавливаются SetScrollInfo)
+    int xPos, yPos, prevPos; //Сдвиг по х ползунка прокрутки, сдвиг по у, предыдущий двиг по у ползунка прокрутки
+    double sizeCoef;   //Коэффициент изменения  (для больших файлов)
 } scroll_t;
 
 typedef struct fileName_t {
-    OPENFILENAME ofn; //информация для инициализации диалогового окна
-    char szFileName[_MAX_PATH]; //максимально доступное название файла
+    OPENFILENAME ofn; //Информация для инициализации диалогового окна
+    char szFileName[_MAX_PATH]; //Максимально доступная длина названия файла
 }filename_t;
 
 void VertScrollWrap(text_t* text, view_t* view, RECT rect, scroll_t* scroll);

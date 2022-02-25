@@ -1,29 +1,25 @@
 #include "main.h"
 
-/*Обновление вертикального скролла и его позиции в режиме с версткой
- PARAM[text] - модель представления текста
- PARAM[view] - модель представления изображения
- PARAM[rect] - прямоугольник клиентского окна
- PARAM[scroll] - модель представления скролла
-*/
+//Обновление вертикального скролла и его позиции в режиме с версткой
+
 void VertScrollWrap(text_t* text, view_t* view, RECT rect, scroll_t* scroll){
-    view->width = (rect.right - rect.left) / view->sym.xCaps; //ширина окна в символах
-    view->yOneList = (rect.bottom - rect.top) / view->sym.yChar; //высота окна в символах
+    view->width = (rect.right - rect.left) / view->sym.xCaps; //Ширина окна в символах
+    view->yOneList = (rect.bottom - rect.top) / view->sym.yChar; //Высота окна в символах
     scroll->scroll.cbSize = sizeof((scroll->scroll));
     scroll->scroll.fMask = SIF_ALL;
-    scroll->scroll.nMin = 0; //нижняя граница скролла
+    scroll->scroll.nMin = 0; //Нижняя граница скролла
     scroll->scroll.nPage = (rect.bottom - rect.top) / view->sym.yChar; //Размер страницы
 
     int strIndex = 0, paintBegin=0;
-    int paintEnd = text->strCount; //сколько строк поместится в рабочую область
+    int paintEnd = text->strCount; //Сколько строк поместится в рабочую область
     int yStr = 0;
-    int extraCountStr = 0; //для переноса того, что не влезло
-    long int textLen = 0; //длина одной строки
+    int extraCountStr = 0; //Для переноса того, что не влезло
+    long int textLen = 0; //Длина одной строки
 
 	if (text->str != NULL) {
 		for (strIndex = paintBegin; strIndex < paintEnd; strIndex++)
 		{
-			textLen = text->strStart[yStr+1] - text->strStart[yStr]; //длина данной строки в символах
+			textLen = text->strStart[yStr+1] - text->strStart[yStr]; //Длина данной строки в символах
 			if (strIndex < text->strCount + extraCountStr)
 			{
 				int k = 0;
@@ -31,13 +27,13 @@ void VertScrollWrap(text_t* text, view_t* view, RECT rect, scroll_t* scroll){
 					while (textLen > view->width) {
 						k++;
 						strIndex++;
-						//уменьшаем длину строки, чтобы она влезла. Остальное перенесем в следующую строку
+						//Длина строки подстраивается под размер рабочей области, остальное - переносится на следующую строку
 						textLen = text->strStart[yStr + 1] - text->strStart[yStr] - k * view->width;
 						paintEnd++;
 						extraCountStr++;
 					}
 				}
-				yStr++; //увеличиваем число строк
+				yStr++; //Увеличиваем число строк
 			}
 		}
 		view->newStrCount = paintEnd;
@@ -71,16 +67,12 @@ void VertScrollWrap(text_t* text, view_t* view, RECT rect, scroll_t* scroll){
 	}
 }
 
-/*Обновление вертикального скролла и его позиции в режиме без верстки
- PARAM[text] - модель представления текста
- PARAM[view] - модель представления изображения
- PARAM[rect] - прямоугольник клиентского окна
- PARAM[scroll] - модель представления скролла
-*/
+//Обновление вертикального скролла и его позиции в режиме без верстки
+
 void VertScrollNoWrap(text_t* text, view_t* view, RECT rect, scroll_t* scroll)
 {
-     view->yOneList = (rect.bottom - rect.top) /  view->sym.yChar; //высота всего окна в символах
-     view->xOneList = (rect.right - rect.left) /  view->sym.xChar; //ширина всего окна в символах
+     view->yOneList = (rect.bottom - rect.top) /  view->sym.yChar; //Высота всего окна в символах
+     view->xOneList = (rect.right - rect.left) /  view->sym.xChar; //Ширина всего окна в символах
 
     //Если все влезает, то скролла не нужно
     if ( view->yOneList >= text->strCount) {
@@ -115,9 +107,8 @@ void VertScrollNoWrap(text_t* text, view_t* view, RECT rect, scroll_t* scroll)
     }
 }
 
-/*Обновление горизонтального скролла и его позиции в режиме с версткой
- PARAM[scroll] - модель представления скролла
-*/
+//Обновление горизонтального скролла и его позиции в режиме с версткой
+
 void HertScrollWrap(scroll_t* scroll)
 {
     scroll-> scroll.cbSize = sizeof(scroll->scroll);
@@ -129,11 +120,8 @@ void HertScrollWrap(scroll_t* scroll)
 }
 
 
-/*Обновление горизонтального скролла и его позиции в режиме без верстки
- PARAM[text] - модель представления текста
- PARAM[view] - модель представления изображения
- PARAM[scroll] - модель представления скролла
-*/
+//Обновление горизонтального скролла и его позиции в режиме без верстки
+
 void HertScrollNoWrap(text_t* text, view_t* view, scroll_t* scroll)
 {
     //Если все влезает, то скролл не нужен

@@ -1,11 +1,10 @@
 #include "main.h"
 
-/*поиск длины максимально длинной строки для вывода без верстки
-  PARAM [str] - все строки текста, разделенные символом перевода строки
-  RETURN - длина наибольшей строки
-*/
+//поиск длины максимально длинной строки для вывода без верстки
+
+
 uint FindMaxStrLen(char* str) {
-    uint i = 0, max = 0, len = 0;
+    uint i = 0, max = 0, len = 0; //max - длина наибольшей строки
     while(str[i] != '\0') {
         len = 0;
         while(str[i] != '\0' && str[i] != '\n'){
@@ -18,9 +17,7 @@ uint FindMaxStrLen(char* str) {
     return max;
 }
 
-/*Очистка структуры текста для завершения программы или закрытия файла
-  PARAM [text] - структура модели текста
-*/
+//Очистка структуры текста для завершения программы или закрытия файла
 void FreeText(text_t* text) {
 
     if (text->strStart){
@@ -36,13 +33,11 @@ void FreeText(text_t* text) {
     text->strCount = 0;
 }
 
-/*инициализация структуры диалогового окна
- PARAM[hwnd] - экземпляр окна
- PARAM[filename] - модель представления файла
-*/
+//Инициализация структуры диалогового окна
+
 void FileInit(HWND hwnd, filename_t* filename)
 {
-    static char szTitleName[_MAX_FNAME + _MAX_EXT]; //статический массив для названия файла
+    static char szTitleName[_MAX_FNAME + _MAX_EXT]; //Массив - названия файла
     filename->ofn.lStructSize       = sizeof(OPENFILENAME);
     filename->ofn.hwndOwner         = hwnd;
     filename->ofn.lpstrFilter       = "text(*.TXT)\0*.txt\0\0"; //параметры для открытия только текстовых файлов;
@@ -59,8 +54,8 @@ void FileInit(HWND hwnd, filename_t* filename)
     filename->ofn.lpTemplateName    = NULL;
     filename->ofn.lpstrInitialDir   = NULL;
     filename->ofn.lpstrTitle        = NULL;
-    filename->ofn.lpstrFileTitle    = szTitleName;//название файла
-    filename->ofn.lpstrFile         = filename->szFileName; //путь к файлу
+    filename->ofn.lpstrFileTitle    = szTitleName;//Название файла
+    filename->ofn.lpstrFile         = filename->szFileName; //Местоположение файла
     filename->ofn.lpstrCustomFilter = NULL;
     filename->ofn.hInstance         = NULL;
 }
@@ -91,28 +86,26 @@ BOOL ReadText(text_t* text, char* fileName, view_t* view)
 
     if (text->str && text->strStart) {
         text->str[sizeText] = '\0';
-
-        fread(text->str, sizeof(char), sizeText, file); //считываем весь файл
+        fread(text->str, sizeof(char), sizeText, file); //Считываем файл (весь)
         for (i = 0; i < sizeText; i++) {
-            //новая строка
-            if (text->str[i] == '\n'){
+            if (text->str[i] == '\n'){//Проверка конца строки
                 strCount++;
-                text->strStart[strCount] = i + 1; //новый отступ строки
+                text->strStart[strCount] = i + 1; //Новый отступ строки
                 sizeText--;
             }
         }
         text->strStart[strCount + 1] = i;
         text->strCount = strCount + 1;
 
-        // находим размер самой длинной строки для вывода без верстки
+        //Наибольшая длина строки в тексте
         text->maxStrLen = FindMaxStrLen(text->str);
 
-        //запоминаем максимальное число пикселей в строке для вывода без верстки
+        //Максимальное число пикселей в строке для вывода без верстки
         view->iMaxWidth = text->maxStrLen * view->sym.xCaps;
 
     }
 
-    //ошибка выделения памяти под str или strStart
+    //Ошибка выделения памяти под str или strStart
     else {
             FreeText(text);
             fclose(file);

@@ -8,7 +8,7 @@ Menu MENU {
     }
 
     POPUP "&VIEW" {
-        MENUITEM "&Wrap OFF", IDM_WRAP_OFF
-        MENUITEM "&Wrap ON", IDM_WRAP_ON
+        MENUITEM "&Layout OFF", IDM_WRAP_OFF
+        MENUITEM "&Layout ON", IDM_WRAP_ON
     }
 }

@@ -16,7 +16,7 @@
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 
 /*  Make the class name into a global variable  */
-TCHAR szClassName[ ] = _T("My Reader");
+TCHAR szClassName[ ] = _T("Reader");
 
 TCHAR szMenuName[ ] = _T("Menu");
 
@@ -89,13 +89,13 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 {
     HDC hdc;
     PAINTSTRUCT ps;
-    TEXTMETRIC tm; //основная информация о физическом шрифте
-    RECT rect; //клиентское окно
+    TEXTMETRIC tm; //Основная информация о физическом шрифте
+    RECT rect; //Клиентское окно
 
     static HMENU hMenu;
 
     static filename_t filename;
-    static text_t text; //модель работы с текстом
+    static text_t text; //Модель работы с текстом
     static view_t view;
     static scroll_t scroll;
 
@@ -103,7 +103,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     {
         case WM_CREATE: {
 
-        //инициализация статических переменных
+        //Инициализация статических переменных
         view.newStrCount = 0;
         view.yOneList = 0;
         view.xOneList = 0;
@@ -113,26 +113,26 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         hdc = GetDC(hwnd);
         SelectObject(hdc, GetStockObject(SYSTEM_FIXED_FONT));
         GetTextMetrics(hdc, &tm);
-        view.sym.xChar = tm.tmAveCharWidth; //средняя ширина символов
+        view.sym.xChar = tm.tmAveCharWidth; //Cредняя ширина символов
         view.sym.xCaps =(tm.tmPitchAndFamily & 1 ? 3 : 2) * view.sym.xChar / 2;
-        view.sym.yChar = tm.tmHeight + tm.tmExternalLeading; //высота + межстрочное пространство
-        ReleaseDC(hwnd, hdc); //освобождает контекст устройства для использования другими приложениями
+        view.sym.yChar = tm.tmHeight + tm.tmExternalLeading; //Dысота + межстрочное пространство
+        ReleaseDC(hwnd, hdc); //Jсвобождает контекст устройства для использования другими приложениями
 
         CREATESTRUCT* p = (CREATESTRUCT*) lParam;
         FileInit(hwnd, &filename);
 
-        //если файл был передан через аргумент командной строки
+        //Если файл был передан через аргумент командной строки
         char* file = (char*)p->lpCreateParams;
          if (ReadText(&text, file, &view) == TRUE) {
             hMenu = GetMenu(hwnd);
-            CheckMenuItem(hMenu, view.selectedMode, MF_CHECKED); //устанавливает атрибут "галочки" заданного пункта меню в выбранное состояние
+            CheckMenuItem(hMenu, view.selectedMode, MF_CHECKED); //Устанавливает атрибут "галочки" заданного пункта меню в выбранное состояние
         }
         return 0;
     }
         case WM_PAINT: {
             hdc = BeginPaint(hwnd, &ps);
 
-            //текст существует, тогда выводим его
+            //Текст существует, тогда выводим его
             if(text.str != NULL) {
                 if (view.selectedMode == IDM_WRAP_ON)
                     PaintTextWrap(hdc, &text, &view, &scroll);
@@ -143,7 +143,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 	    	return 0;
         }
 
-        //сообщение на изменение окна
+        //Сообщение на изменение окна
         case WM_SIZE : {
             view.clientScreen.x = LOWORD(lParam);
             view.clientScreen.y = HIWORD(lParam);
@@ -151,7 +151,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             GetClientRect(hwnd, &rect);
             GetScrollInfo(hwnd, SB_VERT, &(scroll.scroll));
 
-            //обновление вертикального скролла
+            //Обновление вертикального скролла
 		    if (view.selectedMode == IDM_WRAP_ON)
                VertScrollWrap(&text, &view, rect, &scroll);
             else if(view.selectedMode == IDM_WRAP_OFF)
@@ -159,7 +159,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             SetScrollRange(hwnd, SB_VERT, 0, scroll.scroll.nMax, FALSE);
             SetScrollPos(hwnd, SB_VERT, scroll.scroll.nPos, TRUE);
 
-            //обновление горизонтального скролла
+            //Обновление горизонтального скролла
             if (view.selectedMode == IDM_WRAP_ON)
                 HertScrollWrap(&scroll);
             else if(view.selectedMode == IDM_WRAP_OFF)
@@ -167,13 +167,13 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             SetScrollRange(hwnd, SB_HORZ, 0, scroll.scroll.nMax, FALSE);
             SetScrollPos(hwnd, SB_HORZ, scroll.scroll.nPos, TRUE);
 
-		    InvalidateRect(hwnd, NULL, TRUE); //указывает прямоугольник для перерисовки окна
-		    UpdateWindow(hwnd); //обновление окна
+		    InvalidateRect(hwnd, NULL, TRUE); //Указывает прямоугольник для перерисовки окна
+		    UpdateWindow(hwnd); //Обновление окна
 
             return 0;
         }
 
-        //сигнал на горизонтальный скролл
+        //Горизонтальная прокрутка
         case WM_HSCROLL:
 	    {
 		    scroll.scroll.cbSize = sizeof(scroll.scroll);
@@ -181,7 +181,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
             //Получает параметры для горизонтальной полосы прокрутки у окна
 		    GetScrollInfo(hwnd, SB_HORZ, &(scroll.scroll));
-		    scroll.xPos = scroll.scroll.nPos; //позиция ползунка
+		    scroll.xPos = scroll.scroll.nPos; //Позиция ползунка
 
 		    switch (LOWORD(wParam))
 		    {
@@ -191,13 +191,13 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 		        case SB_LINELEFT:
 		        	scroll.scroll.nPos--;
 		        	break;
-                case SB_PAGERIGHT: //свап вправо на ширину окна
+                case SB_PAGERIGHT: //Сдвиг вправо на ширину окна
                     scroll.scroll.nPos += view.xOneList;
                     break;
-	    	    case SB_PAGELEFT: //свап влево на ширину окна
+	    	    case SB_PAGELEFT: //Сдвиг влево на ширину окна
 		     	    scroll.scroll.nPos -= view.xOneList;
 		     	    break;
-	    	    case SB_THUMBTRACK: //пользователь дергает прокрутку
+	    	    case SB_THUMBTRACK: //Если работа происходит мышкой
 	    	    	scroll.scroll.nPos = scroll.scroll.nTrackPos;
 	     	    	break;
 	    	    }
@@ -208,7 +208,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 else if(scroll.scroll.nPos >= scroll.scroll.nMax*scroll.sizeCoef)
                     scroll.scroll.nPos = scroll.scroll.nMax * scroll.sizeCoef;
 
-		        //устанавливает параметры горизонтальной полосы прокрутки
+		        //Устанавливает параметры горизонтальной полосы прокрутки
 		        SetScrollInfo(hwnd, SB_HORZ, &(scroll.scroll), TRUE);
 
 		        //Обновить координаты
@@ -219,7 +219,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 	    	    }
 		    return 0;
 	    }
-    //сигнао на вертикальный скролл
+    //Вертикальная прокрутка
 	case WM_VSCROLL:
 	    {
 
@@ -247,15 +247,15 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 		    	    scroll.yPos++;
 		    	    scroll.scroll.nPos = (int)(scroll.yPos / scroll.sizeCoef);
 		    	    break;
-		        case SB_PAGEUP: //скролл вверх на высоту окна
+		        case SB_PAGEUP: //Скролл вверх на высоту окна
 			        scroll.yPos -= view.yOneList;
 			        scroll.scroll.nPos = (int)(scroll.yPos / scroll.sizeCoef);
 			        break;
-		        case SB_PAGEDOWN: //скролл вниз на высоту окна
+		        case SB_PAGEDOWN: //Скролл вниз на высоту окна
 		        	scroll.yPos += view.yOneList;
 		        	scroll.scroll.nPos = (int)(scroll.yPos / scroll.sizeCoef);
 	    	    	break;
-	    	    case SB_THUMBTRACK: //пользователь дергает прокрутку
+	    	    case SB_THUMBTRACK: //Пользователь дергает прокрутку
 		    	    scroll.scroll.nPos = (scroll.scroll.nTrackPos);
 		    	    scroll.yPos = scroll.scroll.nPos * scroll.sizeCoef;
 		    	    break;
@@ -315,19 +315,19 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 		    hMenu = GetMenu(hwnd);
 		    switch (LOWORD(wParam))
             {
-            //открытие текстового файла
+            //Открытие текстового файла
 		    case IDM_OPEN:
 
 
                 if(GetOpenFileName(&(filename.ofn)))
                 {
-                    //очиста предыдущего текста, если он был
+                    //Очиста предыдущего текста, если он был
 			        FreeText(&text);
 
-			        //устанавливает атрибут "галочки" заданного пункта меню в выбранное состояние
+			        //Устанавливает атрибут "галочки" заданного пункта меню в выбранное состояние
 			        CheckMenuItem(hMenu, view.selectedMode, MF_CHECKED);
 
-                    //чтение текста
+                    //Чтение текста
                     if (ReadText(&text, filename.szFileName, &view) == FALSE)
                         break;
 
@@ -337,7 +337,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 			        GetClientRect(hwnd, &rect);
                     GetScrollInfo(hwnd, SB_VERT, &(scroll.scroll));
 
-                    //установка вертикального скролла
+                    //Установка вертикального скролла
                     if (view.selectedMode == IDM_WRAP_ON)
                         VertScrollWrap(&text, &view, rect, &scroll);
                     else if(view.selectedMode == IDM_WRAP_OFF)
@@ -345,7 +345,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                     SetScrollRange(hwnd, SB_VERT, 0, scroll.scroll.nMax, FALSE);
                     SetScrollPos(hwnd, SB_VERT, scroll.scroll.nPos, TRUE);
 
-                    //установка горизонтального скролла
+                    //Установка горизонтального скролла
                     if (view.selectedMode == IDM_WRAP_ON)
                         HertScrollWrap(&scroll);
                     else if(view.selectedMode == IDM_WRAP_OFF)
@@ -362,12 +362,12 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             case IDM_CLOSE:
                 FreeText(&text);
 
-                //устанавливает атрибут "галочки" заданного пункта меню в выбранное состояние
+                //Устанавливает атрибут "галочки" заданного пункта меню в выбранное состояние
                 CheckMenuItem(hMenu, view.selectedMode, MF_CHECKED);
 
                 scroll.xPos = 0;
                 scroll.yPos = 0;
-                view.iMaxWidth = 0; //максимальная длина
+                view.iMaxWidth = 0; //Максимальная длина
                 view.newStrCount = 0;
                 GetClientRect(hwnd, &rect);
                 GetScrollInfo(hwnd, SB_VERT, &(scroll.scroll));
@@ -391,17 +391,17 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 			    UpdateWindow(hwnd);
                 break;
 
-            //закрыть всю программу
+            //Закрыть всю программу
             case IDM_EXIT:
                 SendMessage(hwnd, WM_CLOSE,0,0);
                 break;
 
 		    case IDM_WRAP_OFF:
-                //убрать галочку с выбранного режима
+                //Убрать галочку с выбранного режима
 		        CheckMenuItem(hMenu, view.selectedMode, MF_UNCHECKED);
 			    view.selectedMode = LOWORD(wParam);
 
-			    //поставить галочку на новый режим
+			    //Поставить галочку на новый режим
 			    CheckMenuItem(hMenu, view.selectedMode, MF_CHECKED);
 
 			    GetClientRect(hwnd, &rect);
@@ -424,7 +424,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
             case IDM_WRAP_ON:
 
-		        //убрать галочку с выбранного режима
+		        //Убрать галочку с выбранного режима
 			    CheckMenuItem(hMenu, view.selectedMode, MF_UNCHECKED);
 			    view.selectedMode = LOWORD(wParam);
 
@@ -434,7 +434,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 GetClientRect(hwnd, &rect);
                 GetScrollInfo(hwnd, SB_VERT, &(scroll.scroll));
 
-                /*вертикальный скролл*/
+                //Вертикальный скролл
                 VertScrollWrap(&text, &view, rect, &scroll);
                 SetScrollRange(hwnd, SB_VERT, 0, scroll.scroll.nMax, FALSE);
                 SetScrollPos(hwnd, SB_VERT, scroll.scroll.nPos, TRUE);
